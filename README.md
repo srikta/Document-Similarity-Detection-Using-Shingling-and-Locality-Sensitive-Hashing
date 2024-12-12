@@ -13,3 +13,4 @@ Try the project on [Hugging Face Space](https://huggingface.co/spaces/Sourikta/d
 
 ---
 
+![Screenshot 2024-12-12 184634](https://github.com/user-attachments/assets/00e69a1f-71ef-4862-8e15-a4f1d8ce632d)
