@@ -1,10 +1,15 @@
-Document Similarity Detection Using MinHash and Locality-Sensitive Hashing
-This repository contains a tool for calculating the similarity between two DOCX documents using MinHash-based approximate Jaccard similarity. The project utilizes shingling to tokenize text, generates MinHash signatures, and provides an intuitive web interface built with Gradio for document comparison. It is ideal for tasks like plagiarism detection, version comparison, and content clustering.
+# Document Similarity Detection Using MinHash and Locality-Sensitive Hashing
 
-Features:
+This repository provides a tool for comparing the similarity between two DOCX documents using MinHash-based approximate Jaccard similarity. The project uses shingling for text tokenization, generates MinHash signatures, and offers a user-friendly web interface built with Gradio for seamless document comparison.
 
-Text extraction from DOCX files.
-Shingling-based tokenization.
-Efficient similarity computation using MinHash.
-User-friendly Gradio interface.
-Explore the project: Hugging Face Space.
+## Features
+- Extracts text from DOCX files.
+- Tokenizes text using shingling.
+- Computes efficient similarity using MinHash.
+- Provides an intuitive Gradio interface for interaction.
+
+## Demo
+Try the project on [Hugging Face Space](https://huggingface.co/spaces/Sourikta/doc_similarity).
+
+---
+
