@@ -28,10 +28,10 @@ def calculate_similarity(doc1, doc2):
     # Compute MinHash signatures
     minhash1 = MinHash(num_perm=128)
     minhash2 = MinHash(num_perm=128)
-    
+
     for shingle in shingles1:
         minhash1.update(shingle.encode('utf8'))
-    
+
     for shingle in shingles2:
         minhash2.update(shingle.encode('utf8'))
 
@@ -39,29 +39,60 @@ def calculate_similarity(doc1, doc2):
     similarity_score = minhash1.jaccard(minhash2)
     return similarity_score
 
-# Function to handle the file upload and similarity calculation
-def similarity(file1, file2):
-    if file1.name.endswith('.docx'):
+# Function to interpret similarity scores
+def interpret_similarity(score):
+    if score == 1.0:
+        return "Exact Match! The documents are identical."
+    elif 0.8 <= score < 1.0:
+        return "High Similarity: The documents are very similar."
+    elif 0.5 <= score < 0.8:
+        return "Moderate Similarity: The documents share some content."
+    elif 0.2 <= score < 0.5:
+        return "Low Similarity: The documents have limited overlap."
+    else:
+        return "Very Low Similarity: The documents are mostly different."
+
+# Function to handle the similarity calculation
+def similarity(doc1, doc2, file1=None, file2=None):
+    text1 = ""
+    text2 = ""
+
+    # Check for file uploads
+    if file1 is not None and file1.name.endswith('.docx'):
         text1 = extract_text_from_docx(file1.name)
+    elif doc1:
+        text1 = doc1
     else:
-        return "File type not supported. Please upload a DOCX file."
+        return "Please provide either a DOCX file or paste the text for Document 1."
 
-    if file2.name.endswith('.docx'):
+    if file2 is not None and file2.name.endswith('.docx'):
         text2 = extract_text_from_docx(file2.name)
+    elif doc2:
+        text2 = doc2
     else:
-        return "File type not supported. Please upload a DOCX file."
+        return "Please provide either a DOCX file or paste the text for Document 2."
 
-    return calculate_similarity(text1, text2)
+    score = calculate_similarity(text1, text2)
+    return f"Similarity Score: {score:.2f}\n{interpret_similarity(score)}"
 
 # Create a Gradio interface
 with gr.Blocks() as demo:
-    gr.Markdown("## Document Similarity Checker for DOCX files")
-    file1 = gr.File(label="Upload Document 1 (DOCX)")
-    file2 = gr.File(label="Upload Document 2 (DOCX)")
-    output = gr.Textbox(label="Similarity Score")
-    submit = gr.Button("Submit")
-    
-    submit.click(fn=similarity, inputs=[file1, file2], outputs=output)
+    gr.Markdown("## 📄 Document Similarity Checker")
+    gr.Markdown(
+        "Compare two documents by uploading DOCX files or pasting text. The app calculates similarity using MinHash and provides an interpretative score.")
+    with gr.Row():
+        with gr.Column():
+            gr.Markdown("### Document 1")
+            file1 = gr.File(label="Upload DOCX File")
+            doc1 = gr.Textbox(label="Or Paste Text Here", lines=10, placeholder="Paste document text...")
+        with gr.Column():
+            gr.Markdown("### Document 2")
+            file2 = gr.File(label="Upload DOCX File")
+            doc2 = gr.Textbox(label="Or Paste Text Here", lines=10, placeholder="Paste document text...")
+    output = gr.Textbox(label="Result", lines=3)
+    submit = gr.Button("Check Similarity", variant="primary")
 
-# Launching the Streamlit app
+    submit.click(fn=similarity, inputs=[doc1, doc2, file1, file2], outputs=output)
+
+# Launch the Gradio app
 demo.launch()
